@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gocomics/main.dart';
 import 'package:http/http.dart' as http;
 
 class menuApp extends StatefulWidget {
@@ -140,7 +141,7 @@ class _PaginaComicsState extends State<PaginaComics> {
                 leading: Image(
                   width: 50,
                   height: 100,
-                  image: NetworkImage("https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencom"]),
+                  image: NetworkImage(_comics[index]["imagencom"].toString().length == 0? "https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencom"] : "https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencol"] ),
                 ),
                 trailing: FloatingActionButton(
                   onPressed: (){
@@ -152,11 +153,10 @@ class _PaginaComicsState extends State<PaginaComics> {
                 ),
               );
             } else {
-              return const Padding(
+              return Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Center(
-                  child: CircularProgressIndicator(),
-                  //hasMore == true ? CircularProgressIndicator() : Text("No hay más."),
+                  child: hasMore == true ? CircularProgressIndicator() : Text("No hay más."),
                 ),
               );
             }
@@ -182,7 +182,13 @@ class PaginaUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("User", style: TextStyle(fontSize: 25),),
+      child: IconButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+        },
+        icon: const Icon(Icons.logout),
+
+      ),
     );
   }
 }

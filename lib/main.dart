@@ -14,7 +14,7 @@ class LoginApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "Flutter + MySql",
+      title: "GoComics",
       home: LoginPage(),
       routes: <String, WidgetBuilder>{
         '/menuPage': (BuildContext context) => new menuApp(),
@@ -52,7 +52,8 @@ class _LoginPageState extends State<LoginPage> {
         mensaje= "Usuario o contraseña incorrectos.";
       });
     } else {
-      Navigator.pushReplacementNamed(context, "/menuPage");
+      //Navigator.pushReplacementNamed(context, "/menuPage");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => menuApp()));
     }
     return datauser;
   }
