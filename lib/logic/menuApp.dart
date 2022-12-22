@@ -6,7 +6,9 @@ import 'package:gocomics/main.dart';
 import 'package:http/http.dart' as http;
 
 class menuApp extends StatefulWidget {
-  const menuApp({Key? key}) : super(key: key);
+  int idusuario;
+
+  menuApp(this.idusuario);
 
   @override
   State<menuApp> createState() => _menuAppState();
@@ -14,11 +16,13 @@ class menuApp extends StatefulWidget {
 
 class _menuAppState extends State<menuApp> {
   int _pestAct = 0;
-  List<Widget> _paginas = [
-    PaginaComics(),
+
+  /*final List<Widget> _paginas = [
+    PaginaComics(1),
     PaginaBuscar(),
     PaginaUser()
-  ];
+  ];*/
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class _menuAppState extends State<menuApp> {
           title: Text("Material App Bar"),
           backgroundColor: Colors.black,
         ),
-        body: _paginas[_pestAct],
+        body: prueba(),
         bottomNavigationBar: BottomNavigationBar(
           onTap: (index){
             setState(() {
@@ -48,10 +52,23 @@ class _menuAppState extends State<menuApp> {
       ),
     );
   }
+
+  Widget prueba() {
+    final List<Widget> _paginas = [
+      PaginaComics(widget.idusuario),
+      PaginaBuscar(),
+      PaginaUser()
+    ];
+
+    return _paginas[_pestAct];
+  }
+
 }
 
 class PaginaComics extends StatefulWidget {
-  PaginaComics({Key? key}) : super(key: key);
+  int idusuario;
+
+  PaginaComics(this.idusuario);
 
   @override
   State<PaginaComics> createState() => _PaginaComicsState();
@@ -60,14 +77,14 @@ class PaginaComics extends StatefulWidget {
 class _PaginaComicsState extends State<PaginaComics> {
   List _comics = [];
   final listaComics = ScrollController();
-  static bool hasMore = true;
+  static bool hasMore = false;
   int limit = 0;
 
 
   SiguiendoComics()async {
     final response = await http.post(Uri.parse("http://192.168.1.68:80/developer/siguiendo.php"), body:
     {
-      "idusuario": "1",
+      "idusuario": widget.idusuario.toString(),
       "limite": limit.toString(),
     });
 
@@ -84,7 +101,7 @@ class _PaginaComicsState extends State<PaginaComics> {
   LeidoComics(String idcomic)async {
     final response = await http.post(Uri.parse("http://192.168.1.68:80/developer/leido.php"), body:
     {
-      "idusuario": "1",
+      "idusuario": widget.idusuario.toString(),
       "idcomic": idcomic,
     });
 
@@ -112,7 +129,7 @@ class _PaginaComicsState extends State<PaginaComics> {
     limit=limit+10;
     final response = await http.post(Uri.parse("http://192.168.1.68:80/developer/siguiendo.php"), body:
     {
-      "idusuario": "1",
+      "idusuario": widget.idusuario.toString(),
       "limite": limit.toString(),
     });
     if(response.statusCode == 200) {
@@ -141,7 +158,7 @@ class _PaginaComicsState extends State<PaginaComics> {
                 leading: Image(
                   width: 50,
                   height: 100,
-                  image: NetworkImage(_comics[index]["imagencom"].toString().length == 0? "https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencom"] : "https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencol"] ),
+                  image: NetworkImage(_comics[index]["imagencom"].toString().length >= 0? "https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencom"] : "https://go-comic.000webhostapp.com/Comics3.0/assets/img/"+_comics[index]["imagencol"] ),
                 ),
                 trailing: FloatingActionButton(
                   onPressed: (){
@@ -156,7 +173,7 @@ class _PaginaComicsState extends State<PaginaComics> {
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Center(
-                  child: hasMore == true ? CircularProgressIndicator() : Text("No hay más."),
+                  child: hasMore == true ? CircularProgressIndicator() : Text("No hay más."+widget.idusuario.toString()),
                 ),
               );
             }

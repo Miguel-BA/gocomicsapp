@@ -17,7 +17,7 @@ class LoginApp extends StatelessWidget {
       title: "GoComics",
       home: LoginPage(),
       routes: <String, WidgetBuilder>{
-        '/menuPage': (BuildContext context) => new menuApp(),
+        //'/menuPage': (BuildContext context) => new menuApp(),
         '/vendedoresPage': (BuildContext context) => new Vendedores(),
         '/LoginPage': (BuildContext context) => LoginPage(),
       },
@@ -42,8 +42,8 @@ class _LoginPageState extends State<LoginPage> {
   Future<List> login() async {
     final response = await http.post(Uri.parse("http://192.168.1.68:80/developer/comparar.php"), body:
     {
-      "usuario": "Lycaon",//controllerUser.text,
-      "password": "1234",//controllerPass.text,
+      "usuario": controllerUser.text,
+      "password": controllerPass.text,
     });
     var datauser = json.decode(response.body);
 
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
       });
     } else {
       //Navigator.pushReplacementNamed(context, "/menuPage");
-      Navigator.push(context, MaterialPageRoute(builder: (context) => menuApp()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => menuApp(int.parse(datauser[0]["id_usuario"]))));
     }
     return datauser;
   }
